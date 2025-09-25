@@ -44,6 +44,9 @@ struct ContentView: View {
             }
             .alert("Add Podcast", isPresented: $showingAddPodcast) {
                 TextField("", text: $newPodcastURL)
+                    .textInputAutocapitalization(.never)
+                    .keyboardType(.URL)
+                    .submitLabel(.done)
 
                 Button("Cancel", role: .cancel) {
                     newPodcastURL = ""
