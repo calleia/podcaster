@@ -12,6 +12,9 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var podcasts: [Podcast]
 
+    @State private var showingAddPodcast = false
+    @State private var newPodcastURL = ""
+
     var body: some View {
         NavigationSplitView {
             List {
@@ -19,7 +22,10 @@ struct ContentView: View {
                     NavigationLink {
                         Text("Podcast at \(podcast.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
                     } label: {
-                        Text(podcast.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(podcast.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                            Text(podcast.url)
+                        }
                     }
                 }
                 .onDelete(perform: deletePodcasts)
@@ -29,21 +35,38 @@ struct ContentView: View {
                     EditButton()
                 }
                 ToolbarItem {
-                    Button(action: addPodcast) {
+                    Button {
+                        showingAddPodcast = true
+                    } label: {
                         Label("Add Podcast", systemImage: "plus")
                     }
                 }
+            }
+            .alert("Add Podcast", isPresented: $showingAddPodcast) {
+                TextField("", text: $newPodcastURL)
+
+                Button("Cancel", role: .cancel) {
+                    newPodcastURL = ""
+                }
+
+                Button("Add") {
+                    addPodcast(urlString: newPodcastURL.trimmingCharacters(in: .whitespacesAndNewlines))
+                    newPodcastURL = ""
+                }
+            } message: {
+                Text("Enter the URL of an RSS feed.")
             }
         } detail: {
             Text("Select a podcast")
         }
     }
 
-    private func addPodcast() {
+    private func addPodcast(urlString: String) {
         withAnimation {
-            // TODO: add Podcast's RSS feed URL string
-            let newPodcast = Podcast(url: "", timestamp: Date())
+            // TODO: make sure the string is a valid URL
+            let newPodcast = Podcast(url: urlString, timestamp: Date())
             modelContext.insert(newPodcast)
+            // TODO: load RSS feed from the received URL
         }
     }
 
