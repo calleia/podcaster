@@ -24,7 +24,13 @@ struct ContentView: View {
                     } label: {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(podcast.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                            Text(podcast.url)
+                            if !podcast.url.isEmpty {
+                                Text(podcast.url)
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(1)
+                                    .truncationMode(.middle)
+                            }
                         }
                     }
                 }
