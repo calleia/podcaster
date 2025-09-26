@@ -71,6 +71,7 @@ struct ContentView: View {
     }
 
     private func addPodcast(urlString: String) {
+        loadRSSFeed(from: urlString)
         withAnimation {
             // TODO: make sure the string is a valid URL
             let newPodcast = Podcast(url: urlString, timestamp: Date())
@@ -91,4 +92,40 @@ struct ContentView: View {
 #Preview {
     ContentView()
         .modelContainer(for: Podcast.self, inMemory: true)
+}
+
+extension ContentView {
+    func loadRSSFeed(from urlString: String) {
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL: \(urlString)")
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue("application/rss+xml", forHTTPHeaderField: "Accept")
+
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("CLIENT ERROR: \(error.localizedDescription)")
+                return
+            }
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                print("SERVER ERROR: \(response.debugDescription)")
+                return
+            }
+            guard let data = data else {
+                print("No data returned")
+                return
+            }
+
+            // Response XML string
+            print(String(data: data, encoding: .utf8))
+
+            // TODO: parse XML
+        }
+
+        task.resume()
+    }
 }
