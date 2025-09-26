@@ -23,7 +23,7 @@ struct ContentView: View {
                         Text("Podcast at \(podcast.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
                     } label: {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(podcast.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                            Text(podcast.name)
                             if !podcast.url.isEmpty {
                                 Text(podcast.url)
                                     .font(.footnote)
@@ -71,12 +71,22 @@ struct ContentView: View {
     }
 
     private func addPodcast(urlString: String) {
-        loadRSSFeed(from: urlString)
         withAnimation {
             // TODO: make sure the string is a valid URL
             let newPodcast = Podcast(url: urlString, timestamp: Date())
             modelContext.insert(newPodcast)
-            // TODO: load RSS feed from the received URL
+
+            loadRSSFeed(from: urlString) { result in
+                switch result {
+                case .success(let title):
+                    Task { @MainActor in
+                        newPodcast.name = title
+                        try? modelContext.save()
+                    }
+                case .failure(let error):
+                    print(error)
+                }
+            }
         }
     }
 
@@ -95,10 +105,11 @@ struct ContentView: View {
 }
 
 extension ContentView {
-    func loadRSSFeed(from urlString: String) {
+    enum RSSError: Error { case invalidURL, badStatus, noData, parseFailed }
+
+    func loadRSSFeed(from urlString: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard let url = URL(string: urlString) else {
-            print("Invalid URL: \(urlString)")
-            return
+            return completion(.failure(RSSError.invalidURL))
         }
 
         var request = URLRequest(url: url)
@@ -107,23 +118,30 @@ extension ContentView {
 
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("CLIENT ERROR: \(error.localizedDescription)")
-                return
+                return completion(.failure(error))
             }
             guard let httpResponse = response as? HTTPURLResponse,
                   (200...299).contains(httpResponse.statusCode) else {
-                print("SERVER ERROR: \(response.debugDescription)")
-                return
+                return completion(.failure(RSSError.badStatus))
             }
             guard let data = data else {
-                print("No data returned")
-                return
+                return completion(.failure(RSSError.noData))
             }
 
             // Response XML string
-            print(String(data: data, encoding: .utf8))
+            //print(String(data: data, encoding: .utf8))
 
-            // TODO: parse XML
+            DispatchQueue.global(qos: .userInitiated).async {
+                let parser = XMLParser(data: data)
+                let rssParserDelegate = RSSParserDelegate()
+                parser.delegate = rssParserDelegate
+
+                if parser.parse() {
+                    completion(.success(rssParserDelegate.title))
+                } else {
+                    completion(.failure(RSSError.parseFailed))
+                }
+            }
         }
 
         task.resume()

@@ -10,10 +10,12 @@ import SwiftData
 
 @Model
 final class Podcast {
+    var name: String
     var url: String
     var timestamp: Date
 
-    init(url: String, timestamp: Date) {
+    init(url: String, timestamp: Date, name: String = "") {
+        self.name = name
         self.url = url
         self.timestamp = timestamp
     }
