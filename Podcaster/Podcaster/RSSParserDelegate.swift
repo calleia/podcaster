@@ -21,6 +21,11 @@ final class RSSParserDelegate: NSObject, XMLParserDelegate {
         if elementName == "itunes:image" {
             channelImageURL = attributeDict["href"] ?? ""
         } else if elementName == "itunes:category" {
+            // TODO: improve handling of subcategories
+            if stack.count > 1, stack[stack.count - 2] == "itunes:category" {
+                channelCategories.removeLast()
+            }
+
             guard let category = attributeDict["text"] else { return }
             channelCategories.append(category)
         }
