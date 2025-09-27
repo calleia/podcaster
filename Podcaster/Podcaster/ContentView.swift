@@ -20,7 +20,7 @@ struct ContentView: View {
             List {
                 ForEach(podcasts) { podcast in
                     NavigationLink {
-                        Text("Podcast at \(podcast.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                        PodcastView()
                     } label: {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(podcast.name)
