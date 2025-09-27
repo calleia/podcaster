@@ -95,7 +95,6 @@ final class RSSParserDelegate: NSObject, XMLParserDelegate {
 
 extension RSSParserDelegate {
     private func addEpisode() {
-        guard let episodeDuration = Int(episodeDuration) else { return }
         let episode = Episode(
             title: episodeTitle,
             duration: episodeDuration,

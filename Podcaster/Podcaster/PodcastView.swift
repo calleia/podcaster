@@ -98,9 +98,9 @@ struct PodcastView: View {
                             Text(episode.title)
                                 .lineLimit(1)
                                 .truncationMode(.tail)
-                            if episode.duration > 0 {
+                            if !episode.duration.isEmpty {
                                 Spacer()
-                                Text("\(episode.duration)s")
+                                Text("\(episode.duration)")
                                     .font(.footnote)
                                     .foregroundStyle(.secondary)
                                     .lineLimit(1)

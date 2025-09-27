@@ -11,7 +11,7 @@ import SwiftData
 @Model
 final class Episode {
     var title: String
-    var duration: Int
+    var duration: String
 
     // Enclosure tag attributes
     var url: String
@@ -19,7 +19,7 @@ final class Episode {
     var length: Int
 
     init(title: String,
-         duration: Int,
+         duration: String,
          url: String,
          type: String,
          length: Int) {
