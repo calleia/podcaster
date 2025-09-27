@@ -137,7 +137,7 @@ extension ContentView {
                 parser.delegate = rssParserDelegate
 
                 if parser.parse() {
-                    completion(.success(rssParserDelegate.title))
+                    completion(.success(rssParserDelegate.channelTitle))
                 } else {
                     completion(.failure(RSSError.parseFailed))
                 }

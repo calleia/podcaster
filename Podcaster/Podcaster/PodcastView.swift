@@ -21,6 +21,18 @@ struct PodcastView: View {
                 Text(viewModel.podcast.name)
                     .font(.title.bold())
                     .accessibilityAddTraits(.isHeader)
+
+                // Description
+                if !viewModel.podcast.desc.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Description")
+                            .font(.headline)
+                        Text(viewModel.podcast.desc)
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                            .textSelection(.enabled)
+                    }
+                }
             }
             .padding()
         }

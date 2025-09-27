@@ -13,10 +13,15 @@ final class Podcast {
     var name: String
     var url: String
     var timestamp: Date
+    var desc: String
 
-    init(url: String, timestamp: Date, name: String = "") {
+    init(url: String,
+         timestamp: Date = Date(),
+         name: String = "",
+         desc: String = "") {
         self.name = name
         self.url = url
         self.timestamp = timestamp
+        self.desc = desc
     }
 }

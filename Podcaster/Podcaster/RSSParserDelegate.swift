@@ -8,7 +8,8 @@
 import Foundation
 
 final class RSSParserDelegate: NSObject, XMLParserDelegate {
-    private(set) var title: String = ""
+    private(set) var channelTitle: String = ""
+    private(set) var channelDescription: String = ""
 
     private var stack: [String] = []
 
@@ -18,9 +19,15 @@ final class RSSParserDelegate: NSObject, XMLParserDelegate {
 
     func parser(_ parser: XMLParser, foundCharacters string: String) {
         guard stack.count > 1 else { return }
-        guard stack[stack.count - 1] == "title" else { return }
         guard stack[stack.count - 2] == "channel" else { return }
-        title.append(string)
+        switch stack.last! {
+        case "title":
+            channelTitle.append(string)
+        case "description":
+            channelDescription.append(string)
+        default:
+            break
+        }
     }
 
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
