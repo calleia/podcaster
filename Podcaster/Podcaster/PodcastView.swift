@@ -75,6 +75,10 @@ struct PodcastView: View {
                             .textSelection(.enabled)
                     }
                 }
+
+                // Authors
+                Text(viewModel.podcast.author)
+                    .font(.subheadline)
             }
             .padding()
         }

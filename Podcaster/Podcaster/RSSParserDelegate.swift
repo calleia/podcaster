@@ -11,6 +11,7 @@ final class RSSParserDelegate: NSObject, XMLParserDelegate {
     private(set) var channelTitle: String = ""
     private(set) var channelDescription: String = ""
     private(set) var channelImageURL: String = ""
+    private(set) var channelAuthor: String = ""
 
     private var stack: [String] = []
 
@@ -31,6 +32,8 @@ final class RSSParserDelegate: NSObject, XMLParserDelegate {
             channelDescription.append(string)
         case "itunes:image":
             channelImageURL.append(string)
+        case "itunes:author":
+            channelAuthor.append(string)
         default:
             break
         }
