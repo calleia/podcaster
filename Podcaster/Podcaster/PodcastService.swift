@@ -47,7 +47,8 @@ struct PodcastService: PodcastServiceProtocol {
                     let podcast = Podcast(
                         url: urlString,
                         name: rssParserDelegate.channelTitle,
-                        desc: rssParserDelegate.channelDescription
+                        desc: rssParserDelegate.channelDescription,
+                        imageURL: rssParserDelegate.channelImageURL
                     )
                     completion(.success(podcast))
                 } else {

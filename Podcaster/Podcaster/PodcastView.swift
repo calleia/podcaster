@@ -14,9 +14,51 @@ struct PodcastView: View {
         _viewModel = StateObject(wrappedValue: PodcastViewModel(podcast: podcast))
     }
 
+    private var placeholder: some View {
+        ZStack {
+            Rectangle().fill(Color.secondary.opacity(0.1))
+            Image(systemName: "mic.fill")
+                .imageScale(.large)
+                .font(.system(size: 40))
+                .foregroundColor(.secondary)
+        }
+        .scaledToFit()
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
+                // Artwork
+                Group {
+                    if let url = URL(string: viewModel.podcast.imageURL) {
+                        // iOS 15+
+                        AsyncImage(url: url) { phase in
+                            switch phase {
+                            case .empty:
+                                placeholder
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                            case .failure:
+                                placeholder
+                            @unknown default:
+                                placeholder
+                            }
+                        }
+                    } else {
+                        placeholder
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 240)
+                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .strokeBorder(.quaternary, lineWidth: 0.5)
+                )
+                .accessibilityLabel(Text("\(viewModel.podcast.name) artwork"))
+
                 // Title
                 Text(viewModel.podcast.name)
                     .font(.title.bold())

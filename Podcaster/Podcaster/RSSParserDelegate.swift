@@ -10,11 +10,15 @@ import Foundation
 final class RSSParserDelegate: NSObject, XMLParserDelegate {
     private(set) var channelTitle: String = ""
     private(set) var channelDescription: String = ""
+    private(set) var channelImageURL: String = ""
 
     private var stack: [String] = []
 
     func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
         stack.append(elementName)
+        if elementName == "itunes:image" {
+            channelImageURL = attributeDict["href"] ?? ""
+        }
     }
 
     func parser(_ parser: XMLParser, foundCharacters string: String) {
@@ -25,6 +29,8 @@ final class RSSParserDelegate: NSObject, XMLParserDelegate {
             channelTitle.append(string)
         case "description":
             channelDescription.append(string)
+        case "itunes:image":
+            channelImageURL.append(string)
         default:
             break
         }

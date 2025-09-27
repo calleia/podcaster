@@ -14,14 +14,17 @@ final class Podcast {
     var url: String
     var timestamp: Date
     var desc: String
+    var imageURL: String
 
     init(url: String,
          timestamp: Date = Date(),
          name: String = "",
-         desc: String = "") {
+         desc: String = "",
+         imageURL: String = "") {
         self.name = name
         self.url = url
         self.timestamp = timestamp
         self.desc = desc
+        self.imageURL = imageURL
     }
 }
