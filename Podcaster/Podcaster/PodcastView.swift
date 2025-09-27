@@ -92,7 +92,7 @@ struct PodcastView: View {
 
                 ForEach(viewModel.podcast.episodes) { episode in
                     NavigationLink {
-                        EpisodeView()
+                        EpisodeView(episode: episode)
                     } label: {
                         HStack(alignment: .center, spacing: 4) {
                             Text(episode.title)
