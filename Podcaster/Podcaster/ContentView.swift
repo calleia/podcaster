@@ -20,7 +20,7 @@ struct ContentView: View {
             List {
                 ForEach(podcasts) { podcast in
                     NavigationLink {
-                        PodcastView()
+                        PodcastView(podcast: podcast)
                     } label: {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(podcast.name)
