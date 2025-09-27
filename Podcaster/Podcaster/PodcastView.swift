@@ -24,6 +24,8 @@ struct PodcastView: View {
             }
             .padding()
         }
+        .task(id: viewModel.podcast.url) { viewModel.load() }
+        .refreshable { viewModel.load() }
     }
 }
 
