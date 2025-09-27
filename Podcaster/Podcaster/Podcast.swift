@@ -17,6 +17,7 @@ final class Podcast {
     var imageURL: String
     var author: String
     var categories: [String]
+    var episodes: [Episode]
 
     init(url: String,
          timestamp: Date = Date(),
@@ -24,7 +25,8 @@ final class Podcast {
          desc: String = "",
          imageURL: String = "",
          author: String = "",
-         categories: [String] = []) {
+         categories: [String] = [],
+         episodes: [Episode] = []) {
         self.name = name
         self.url = url
         self.timestamp = timestamp
@@ -32,5 +34,6 @@ final class Podcast {
         self.imageURL = imageURL
         self.author = author
         self.categories = categories
+        self.episodes = episodes
     }
 }

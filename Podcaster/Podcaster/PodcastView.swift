@@ -83,6 +83,32 @@ struct PodcastView: View {
                 // Genre
                 Text(viewModel.podcast.categories.joined(separator: " | "))
                     .font(.subheadline)
+
+                // Episodes
+                Divider()
+
+                Text("Episodes")
+                    .font(.title)
+
+                ForEach(viewModel.podcast.episodes) { episode in
+                    NavigationLink {
+                        Text(episode.title)
+                    } label: {
+                        HStack(alignment: .center, spacing: 4) {
+                            Text(episode.title)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                            if episode.duration > 0 {
+                                Spacer()
+                                Text("\(episode.duration)s")
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
+                            }
+                        }
+                    }
+                }
             }
             .padding()
         }
