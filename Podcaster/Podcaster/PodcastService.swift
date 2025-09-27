@@ -49,7 +49,8 @@ struct PodcastService: PodcastServiceProtocol {
                         name: rssParserDelegate.channelTitle,
                         desc: rssParserDelegate.channelDescription,
                         imageURL: rssParserDelegate.channelImageURL,
-                        author: rssParserDelegate.channelAuthor
+                        author: rssParserDelegate.channelAuthor,
+                        categories: rssParserDelegate.channelCategories
                     )
                     completion(.success(podcast))
                 } else {

@@ -12,6 +12,7 @@ final class RSSParserDelegate: NSObject, XMLParserDelegate {
     private(set) var channelDescription: String = ""
     private(set) var channelImageURL: String = ""
     private(set) var channelAuthor: String = ""
+    private(set) var channelCategories: [String] = []
 
     private var stack: [String] = []
 
@@ -19,6 +20,9 @@ final class RSSParserDelegate: NSObject, XMLParserDelegate {
         stack.append(elementName)
         if elementName == "itunes:image" {
             channelImageURL = attributeDict["href"] ?? ""
+        } else if elementName == "itunes:category" {
+            guard let category = attributeDict["text"] else { return }
+            channelCategories.append(category)
         }
     }
 

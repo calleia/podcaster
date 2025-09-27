@@ -79,6 +79,10 @@ struct PodcastView: View {
                 // Authors
                 Text(viewModel.podcast.author)
                     .font(.subheadline)
+
+                // Genre
+                Text(viewModel.podcast.categories.joined(separator: " | "))
+                    .font(.subheadline)
             }
             .padding()
         }
