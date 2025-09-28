@@ -25,7 +25,7 @@ struct PodcasterApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            PodcastListView()
         }
         .modelContainer(sharedModelContainer)
     }

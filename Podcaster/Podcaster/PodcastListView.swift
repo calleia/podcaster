@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  PodcastListView.swift
 //  Podcaster
 //
 //  Created by Fellipe Calleia on 25/09/25.
@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct ContentView: View {
+struct PodcastListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var podcasts: [Podcast]
 
@@ -100,11 +100,11 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    PodcastListView()
         .modelContainer(for: Podcast.self, inMemory: true)
 }
 
-extension ContentView {
+extension PodcastListView {
     enum RSSError: Error { case invalidURL, badStatus, noData, parseFailed }
 
     func loadRSSFeed(from urlString: String, completion: @escaping (Result<String, Error>) -> Void) {
