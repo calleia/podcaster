@@ -9,22 +9,19 @@ import SwiftUI
 import SwiftData
 
 struct PodcastListView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var podcasts: [Podcast]
-
     @State private var showingAddPodcast = false
     @State private var newPodcastURL = ""
 
     @StateObject private var viewModel: PodcastListViewModel
 
-    init() {
-        _viewModel = StateObject(wrappedValue: PodcastListViewModel())
+    init(context: ModelContext) {
+        _viewModel = StateObject(wrappedValue: PodcastListViewModel(context: context))
     }
 
     var body: some View {
         NavigationSplitView {
             List {
-                ForEach(podcasts) { podcast in
+                ForEach(viewModel.podcasts) { podcast in
                     NavigationLink {
                         PodcastView(podcast: podcast)
                     } label: {
@@ -40,7 +37,7 @@ struct PodcastListView: View {
                         }
                     }
                 }
-                .onDelete(perform: deletePodcasts)
+                .onDelete(perform: viewModel.deletePodcasts)
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -65,7 +62,7 @@ struct PodcastListView: View {
                 }
 
                 Button("Add") {
-                    addPodcast(urlString: newPodcastURL.trimmingCharacters(in: .whitespacesAndNewlines))
+                    viewModel.addPodcast(urlString: newPodcastURL.trimmingCharacters(in: .whitespacesAndNewlines))
                     newPodcastURL = ""
                 }
             } message: {
@@ -74,38 +71,11 @@ struct PodcastListView: View {
         } detail: {
             Text("Select a podcast")
         }
-    }
-
-    private func addPodcast(urlString: String) {
-        withAnimation {
-            // TODO: make sure the string is a valid URL
-            let newPodcast = Podcast(url: urlString, timestamp: Date())
-            modelContext.insert(newPodcast)
-
-            viewModel.loadPodcast(from: urlString) { result in
-                switch result {
-                case .success(let podcast):
-                    Task { @MainActor in
-                        newPodcast.name = podcast.name
-                        try? modelContext.save()
-                    }
-                case .failure(let error):
-                    print(error)
-                }
-            }
-        }
-    }
-
-    private func deletePodcasts(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(podcasts[index])
-            }
-        }
+        .onAppear() { viewModel.refresh() }
     }
 }
 
 #Preview {
-    PodcastListView()
-        .modelContainer(for: Podcast.self, inMemory: true)
+//    PodcastListView(context: modelContext)
+//        .modelContainer(for: Podcast.self, inMemory: true)
 }
